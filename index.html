@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Ascensor</title>
+</head>
+
+<style type="text/css">
+
+#edificio, .botones-sube-baja
+{
+    display: grid;
+    grid-template-columns: 50px;	
+	float: left;
+}
+.botonesPisos
+{
+    display: grid;
+    grid-template-columns: 50px 50px;	
+	float: left;	
+	background-color: lightgray;
+	margin: 100px;
+}
+.piso
+{
+	background-color: #01814e;
+	border:1px solid black;
+	height: 50px;
+}
+.puerta
+{
+	height: 40px;
+	width: 20px;
+	background-color: #c3c3c3;
+	margin: auto;
+	margin-top: 9px;
+	border: 1px solid black;
+}
+#puerta1
+{
+	background-color: #01814e;
+}
+.persona
+{
+	height: 35px;
+}
+.nivel
+{
+	float: left;
+	color: orangered;
+}
+.botonArriba, .botonAbajo
+{
+	height: 15px;
+	background-color: lightblue;
+	border-radius: 15px;
+	text-align: center;
+	width: 15px;
+	cursor: pointer;
+	font-weight:bolder;
+	font-size: 15px;
+}
+.separador
+{
+	width: 15px;
+	height: 10px;
+	border-bottom: 1px solid white;
+}
+	
+.boton
+{
+	background-image: url('img/boton_back.png');
+	background-repeat: no-repeat;
+	height: 50px;
+	width: 50px;
+	font-size: 25px;
+	padding-left: 10px;
+	padding-top: 5px;
+	margin-left: 3px;
+	margin-top: 4px;
+}
+</style>
+
+<body>
+
+
+<div id="edificio">
+	<div id="piso10" class="piso"><span class="nivel">10</span>
+		<div id="puerta10" class="puerta">
+			<img src="img/persona_esperando.png" id="persona10" class="persona">
+		</div>
+	</div>
+	<div id="piso9" class="piso"><span class="nivel">9</span>
+		<div id="puerta9" class="puerta">
+			<img src="img/persona_esperando.png" id="persona9" class="persona">
+		</div>
+	</div>
+	<div id="piso8" class="piso"><span class="nivel">8</span>
+		<div id="puerta8" class="puerta">
+			<img src="img/persona_esperando.png" id="persona8" class="persona">
+		</div>
+	</div>
+	<div id="piso7" class="piso"><span class="nivel">7</span>
+		<div id="puerta7" class="puerta">
+			<img src="img/persona_esperando.png" id="persona7" class="persona">
+		</div>
+	</div>
+	<div id="piso6" class="piso"><span class="nivel">6</span>
+		<div id="puerta6" class="puerta">
+			<img src="img/persona_esperando.png" id="persona6" class="persona">
+		</div>
+	</div>
+	<div id="piso5" class="piso"><span class="nivel">5</span>
+		<div id="puerta5" class="puerta">
+			<img src="img/persona_esperando.png" id="persona5" class="persona">
+		</div>
+	</div>
+	<div id="piso4" class="piso"><span class="nivel">4</span>
+		<div id="puerta4" class="puerta">
+			<img src="img/persona_esperando.png" id="persona4" class="persona">
+		</div>
+	</div>
+	<div id="piso3" class="piso"><span class="nivel">3</span>
+		<div id="puerta3" class="puerta">
+			<img src="img/persona_esperando.png" id="persona3" class="persona">
+		</div>
+	</div>
+	<div id="piso2" class="piso"><span class="nivel">2</span>
+		<div id="puerta2" class="puerta">
+			<img src="img/persona_subiendo.png" id="persona2" class="persona">
+		</div>
+	</div>
+	<div id="piso1" class="piso"><span class="nivel">1</span>
+		<div id="puerta1" class="puerta">
+			<img src="img/persona_esperando.png" id="persona1" class="persona">
+		</div>
+		
+	</div>
+</div>
+
+<div class="botones-sube-baja"><div class="separador"></div>
+	<div class="botonArriba">↑</div>
+	<div class="botonAbajo">↓</div><div class="separador"></div><div class="separador"></div>
+	<div class="botonArriba">↑</div>
+	<div class="botonAbajo">↓</div><div class="separador"></div><div class="separador"></div>
+	<div class="botonArriba">↑</div>
+	<div class="botonAbajo">↓</div><div class="separador"></div><div class="separador"></div>
+	<div class="botonArriba">↑</div>
+	<div class="botonAbajo">↓</div><div class="separador"></div><div class="separador"></div>
+	<div class="botonArriba">↑</div>
+	<div class="botonAbajo">↓</div><div class="separador"></div><div class="separador"></div>
+	<div class="botonArriba">↑</div>
+	<div class="botonAbajo">↓</div><div class="separador"></div><div class="separador"></div>
+	<div class="botonArriba">↑</div>
+	<div class="botonAbajo">↓</div><div class="separador"></div><div class="separador"></div>
+	<div class="botonArriba">↑</div>
+	<div class="botonAbajo">↓</div><div class="separador"></div><div class="separador"></div>
+	<div class="botonArriba">↑</div>
+	<div class="botonAbajo">↓</div><div class="separador"></div><div class="separador"></div>
+	<div class="botonArriba">↑</div>
+	<div class="botonAbajo">↓</div><div class="separador"></div>
+</div>
+
+<div class="botonesPisos">
+	<div class="boton" id="boton1">1</div>
+	<div class="boton" id="boton2">2</div>
+	<div class="boton" id="boton3">3</div>
+	<div class="boton" id="boton4">4</div>
+	<div class="boton" id="boton5">5</div>
+	<div class="boton" id="boton6">6</div>
+	<div class="boton" id="boton7">7</div>
+	<div class="boton" id="boton8">8</div>
+	<div class="boton" id="boton9">9</div>
+	<div class="boton" id="boton10">10</div>
+	<div class="boton" id="boton10">C</div>
+	<div class="boton" id="boton10">E</div>
+</div>
+
+</body>
+</html>
