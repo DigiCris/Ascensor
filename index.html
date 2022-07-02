@@ -5,7 +5,7 @@
 </head>
 
 <style type="text/css">
-
+/******************Comienza css fijo*****************************/
 #edificio, .botones-sube-baja
 {
     display: grid;
@@ -20,38 +20,76 @@
 	background-color: lightgray;
 	margin: 100px;
 }
+.separador
+{
+	width: 15px;
+	height: 10px;
+	border-bottom: 1px solid white;
+}
 .piso
 {
 	background-color: #01814e;
 	border:1px solid black;
 	height: 50px;
+	z-index: 1;
 }
-.puerta
-{
-	height: 40px;
-	width: 20px;
-	background-color: #c3c3c3;
-	margin: auto;
-	margin-top: 9px;
-	border: 1px solid black;
-}
-#puerta1
-{
-	background-color: #01814e;
-}
+/****************************termina css fijo***********************/
+
+/*************************Comienza Persona**************************/
 .persona
 {
 	height: 35px;
 }
+.persona_hidden
+{
+	display: none;
+}
+.persona_visible
+{
+	display: inline;
+}
+/*************************Termina Persona**************************/
+
+/********************Comienza ascensor*******************************/
 .nivel
 {
 	float: left;
 	color: orangered;
+	width: 20px;
+	height: 20px;
+	border-radius: 10px;
+	text-align: center;
 }
-.botonArriba, .botonAbajo
+.nivel_yellow
+{
+	background-color: yellowgreen;	
+}
+/********************termina ascensor*******************************/
+
+/******************Comienza css para las puertas********************/
+.puerta
+{
+	height: 40px;
+	width: 20px;
+	margin: auto;
+	margin-top: 9px;
+	border: 1px solid black;
+}
+.puerta_abierta
+{
+	background-color: #c3c3c3;
+}
+.puerta_cerrada
+{
+	background-color: #01814e;
+}
+/*******************termina css para las puertas*******************/
+
+/*******************comienza boton arriba y boton abajo ***********/
+.botonLlamada
 {
 	height: 15px;
-	background-color: lightblue;
+
 	border-radius: 15px;
 	text-align: center;
 	width: 15px;
@@ -59,17 +97,21 @@
 	font-weight:bolder;
 	font-size: 15px;
 }
-.separador
+.boton_blue
 {
-	width: 15px;
-	height: 10px;
-	border-bottom: 1px solid white;
+	background-color: lightblue;	
 }
-	
+.boton_red
+{
+	background-image: url('img/boton_red.png');
+	background-repeat: no-repeat;
+	border-radius: 60px;	
+}
+/******************Termina boton arriba y boton abajo **************/
+
+/****************Comienza boton de pisos ***************************/	
 .boton
 {
-	background-image: url('img/boton_back.png');
-	background-repeat: no-repeat;
 	height: 50px;
 	width: 50px;
 	font-size: 25px;
@@ -77,8 +119,262 @@
 	padding-top: 5px;
 	margin-left: 3px;
 	margin-top: 4px;
+	cursor: pointer;
 }
+.boton_grey
+{
+	background-image: url('img/boton_grey.png');
+	background-repeat: no-repeat;
+}
+/* Tambien usa boton_red de boton arriba y boton abajo*/
+/****************Termina boton de pisos ***************************/
 </style>
+
+
+
+<script>
+
+/*
+Usar para la lógica
+
+buffer
+Tiempo_para_empezar_a_correr_logica
+tiempo_entre_subidas_o_bajadas
+piso_asc
+
+subir_piso()
+bajar_piso()
+abrir_puerta(piso)
+cerrar_puerta(piso)
+ir_al_piso(piso)
+*/
+
+var buffer=new Array();
+var piso_asc;
+var puerta_abierta_aviso=0;
+var volver=0;
+var tiempo_entre_subidas_o_bajadas=1000;
+var Tiempo_para_empezar_a_correr_logica=2000;
+var continuar=0;
+
+
+function ir_al_piso(piso=piso_asc)
+{
+	continuar=1;
+	if(volver!=0)
+	{
+		piso=volver;
+	}
+	if(piso>piso_asc)
+	{
+		volver=piso;
+		subir_piso();
+	}
+	if(piso<piso_asc)
+	{
+		volver=piso;
+		bajar_piso();
+	}
+	if(piso==piso_asc)
+	{
+		volver=0;
+		continuar=0;
+	}
+}
+function subir_piso()
+{
+	continuar++;
+	if(puerta_abierta_aviso==0)
+	{
+		piso_asc++;
+		encender_piso(piso_asc);		
+	}
+	else
+	{
+		alert("usted dejo la puerta abierta, no puede subir");
+	}
+	if(volver!=0)
+	{
+		setTimeout(ir_al_piso,tiempo_entre_subidas_o_bajadas);
+	}
+	continuar--;
+}
+function bajar_piso()
+{
+	continuar++;
+	if(puerta_abierta_aviso==0)
+	{
+		piso_asc--;
+		encender_piso(piso_asc);		
+	}
+	else
+	{
+		alert("usted dejo la puerta abierta, no puede subir");
+	}
+	if(volver!=0)
+	{
+		setTimeout(ir_al_piso,tiempo_entre_subidas_o_bajadas);
+	}
+	continuar--;
+}
+function abrir_puerta(piso)
+{
+	continuar=1;
+	if(puerta_abierta_aviso==1)
+	{
+		alert('la puerta ya está abierta');
+	}
+	if(piso==piso_asc)
+	{
+		puerta_abierta_aviso=1;
+		var puerta=document.getElementsByClassName('puerta');
+		puerta[(puerta.length-piso)].className="puerta puerta_abierta";
+
+		aux=document.getElementById('persona'+piso+'v').className;
+		aux=aux.replace("persona_visible","persona_hidden");
+		document.getElementById('persona'+piso+'v').className=aux;
+		//console.log(aux);
+
+		aux=document.getElementById('persona'+piso+'g').className;
+		aux=aux.replace("persona_hidden","persona_visible");
+		document.getElementById('persona'+piso+'g').className=aux;
+		//console.log(aux);
+	}
+	else
+	{
+		alert("No se puede abrir la puerta si el ascensor no está aquí");
+	}
+	continuar=0;
+}
+function cerrar_puerta(piso)
+{
+	continuar=1;
+	if(puerta_abierta_aviso==0)
+	{
+		alert("la puerta ya está cerrada");
+	}
+	if(piso==piso_asc)
+	{
+		var puerta=document.getElementsByClassName('puerta');
+		puerta[(puerta.length-piso)].className="puerta puerta_cerrada";
+		puerta_abierta_aviso=0;
+
+		aux=document.getElementById('persona'+piso+'v').className;
+		aux=aux.replace("persona_visible","persona_hidden");
+		document.getElementById('persona'+piso+'v').className=aux;
+		//console.log(aux);
+
+		aux=document.getElementById('persona'+piso+'g').className;
+		aux=aux.replace("persona_visible","persona_hidden");
+		document.getElementById('persona'+piso+'g').className=aux;
+		//console.log(aux);
+	}
+	else
+	{
+		alert("No puede cerrar una puerta que nunca debió abrirse");
+	}
+	continuar=0;
+}
+
+
+
+function encender_piso(piso)
+{
+	continuar++;
+	piso_asc=piso;
+	var nivel=document.getElementsByClassName('nivel');
+	if(nivel.length<piso)
+	{
+		alert("Usted está queriendo ir a un piso inexistente por arriba");
+		piso_asc--;		
+	}
+	else
+	{
+		if(piso<1)
+		{
+			alert("Usted está queriendo ir a un piso inexistente por debajo");
+			piso_asc++;
+		}		
+		else
+		{
+			borrar(nivel,"nivel");
+			nivel[(nivel.length-piso)].className="nivel nivel_yellow";
+		}
+	}
+	continuar--;
+}
+function inicializacion()
+{
+/*********************comienzo Inicializo nivel********************************/
+piso_asc=1;;
+encender_piso(piso_asc);
+/*********************termino Inicializo nivel********************************/
+
+/*********************comienzo Inicializo persona********************************/
+var persona=document.getElementsByClassName('persona');
+borrar(persona,"persona persona_hidden");
+/*********************termino Inicializo persona********************************/
+
+/*********************comienzo Inicializo puerta********************************/
+var puerta=document.getElementsByClassName('puerta');
+borrar(puerta,"puerta puerta_cerrada");
+/*********************termino Inicializo puerta********************************/
+
+/*********************comienzo Inicializo botonLlamada************************/
+var botonLlamada=document.getElementsByClassName('botonLlamada');
+borrar(botonLlamada,"botonLlamada boton_grey");
+/*********************termino Inicializo botonLlamada********************************/
+
+/*********************comienzo Inicializo boton************************/
+var boton=document.getElementsByClassName('boton');
+borrar(boton,"boton boton_grey");
+/*********************termino Inicializo botonL********************************/
+}
+function borrar(variable, valor)
+{
+	for(var i=0;i<variable.length;i++)
+	{
+		variable[i].className=valor;
+		//console.log(variable[i]);
+	}	
+}
+/*
+Guarda en Buffer los botones precionados en el orden que son precionados.
+buffer es un array del tipo buffer[i] siendo i numeros naturales + 0.
+si se preciona el mismo botón dos veces los guarda 2 veces.
+El contenido de cada buffer es el siguiente:
+bufer{"concepto":x,"piso":y, "id":z};
+siendo:
+concepto= ascensor, arriba, Abajo. Si es ascensor es porque se tocaron los
+numeros de 1 a 10 o las letras C y E dentro del ascensor, si es arriba es porque
+fue tocada la flecha para arriba y abajo la flecha para abajo.
+piso= numero de piso en donde se llamó al ascensor, o el precionado dentro de este.
+id= id del boton en el html para modificarlo usando javascript
+*/
+function precionar(boton, concepto="ascensor", este)
+{
+	var but = {"concepto":concepto,"piso":boton, "id":este.attributes.id.value};
+	buffer.push(but);
+	console.log(buffer);
+	var aux=document.getElementById(este.attributes.id.value).className;
+	aux=aux.replace("boton_grey","boton_red");
+	document.getElementById(este.attributes.id.value).className=aux;
+	if(concepto!='ascensor')
+	{
+		aux=document.getElementById('persona'+boton+'v').className;
+		aux=aux.replace("persona_hidden","persona_visible");
+		document.getElementById('persona'+boton+'v').className=aux;
+		//console.log(aux);
+
+		aux=document.getElementById('persona'+boton+'g').className;
+		aux=aux.replace("persona_visible","persona_hidden");
+		document.getElementById('persona'+boton+'g').className=aux;
+		//console.log(aux);
+	}
+}
+</script>
+
+<script src="./logica.js"></script>
 
 <body>
 
@@ -86,94 +382,109 @@
 <div id="edificio">
 	<div id="piso10" class="piso"><span class="nivel">10</span>
 		<div id="puerta10" class="puerta">
-			<img src="img/persona_esperando.png" id="persona10" class="persona">
+			<img src="img/persona_esperando.png" id="persona10v" class="persona persona_visible">
+			<img src="img/persona_subiendo.png" id="persona10g" class="persona persona_hidden">
 		</div>
 	</div>
 	<div id="piso9" class="piso"><span class="nivel">9</span>
 		<div id="puerta9" class="puerta">
-			<img src="img/persona_esperando.png" id="persona9" class="persona">
+			<img src="img/persona_esperando.png" id="persona9v" class="persona persona_visible">
+			<img src="img/persona_subiendo.png" id="persona9g" class="persona persona_hidden">
 		</div>
 	</div>
 	<div id="piso8" class="piso"><span class="nivel">8</span>
 		<div id="puerta8" class="puerta">
-			<img src="img/persona_esperando.png" id="persona8" class="persona">
+			<img src="img/persona_esperando.png" id="persona8v" class="persona persona_visible">
+			<img src="img/persona_subiendo.png" id="persona8g" class="persona persona_hidden">
 		</div>
 	</div>
 	<div id="piso7" class="piso"><span class="nivel">7</span>
 		<div id="puerta7" class="puerta">
-			<img src="img/persona_esperando.png" id="persona7" class="persona">
+			<img src="img/persona_esperando.png" id="persona7v" class="persona persona_visible">
+			<img src="img/persona_subiendo.png" id="persona7g" class="persona persona_hidden">
 		</div>
 	</div>
-	<div id="piso6" class="piso"><span class="nivel">6</span>
+	<div id="piso6" class="piso"><span class="nivel nivel_yellow">6</span>
 		<div id="puerta6" class="puerta">
-			<img src="img/persona_esperando.png" id="persona6" class="persona">
+			<img src="img/persona_esperando.png" id="persona6v" class="persona persona_visible">
+			<img src="img/persona_subiendo.png" id="persona6g" class="persona persona_hidden">
 		</div>
 	</div>
 	<div id="piso5" class="piso"><span class="nivel">5</span>
 		<div id="puerta5" class="puerta">
-			<img src="img/persona_esperando.png" id="persona5" class="persona">
+			<img src="img/persona_esperando.png" id="persona5v" class="persona persona_visible">
+			<img src="img/persona_subiendo.png" id="persona5g" class="persona persona_hidden">
 		</div>
 	</div>
 	<div id="piso4" class="piso"><span class="nivel">4</span>
 		<div id="puerta4" class="puerta">
-			<img src="img/persona_esperando.png" id="persona4" class="persona">
+			<img src="img/persona_esperando.png" id="persona4v" class="persona persona_visible">
+			<img src="img/persona_subiendo.png" id="persona4g" class="persona persona_hidden">
 		</div>
 	</div>
 	<div id="piso3" class="piso"><span class="nivel">3</span>
 		<div id="puerta3" class="puerta">
-			<img src="img/persona_esperando.png" id="persona3" class="persona">
+			<img src="img/persona_esperando.png" id="persona3v" class="persona persona_visible">
+			<img src="img/persona_subiendo.png" id="persona3g" class="persona persona_hidden">
 		</div>
 	</div>
 	<div id="piso2" class="piso"><span class="nivel">2</span>
 		<div id="puerta2" class="puerta">
-			<img src="img/persona_subiendo.png" id="persona2" class="persona">
+			<img src="img/persona_esperando.png" id="persona2v" class="persona persona_visible">
+			<img src="img/persona_subiendo.png" id="persona2g" class="persona persona_hidden">
 		</div>
 	</div>
 	<div id="piso1" class="piso"><span class="nivel">1</span>
 		<div id="puerta1" class="puerta">
-			<img src="img/persona_esperando.png" id="persona1" class="persona">
+			<img src="img/persona_esperando.png" id="persona1v" class="persona persona_visible">
+			<img src="img/persona_subiendo.png" id="persona1g" class="persona persona_hidden">
 		</div>
 		
 	</div>
 </div>
 
 <div class="botones-sube-baja"><div class="separador"></div>
-	<div class="botonArriba">↑</div>
-	<div class="botonAbajo">↓</div><div class="separador"></div><div class="separador"></div>
-	<div class="botonArriba">↑</div>
-	<div class="botonAbajo">↓</div><div class="separador"></div><div class="separador"></div>
-	<div class="botonArriba">↑</div>
-	<div class="botonAbajo">↓</div><div class="separador"></div><div class="separador"></div>
-	<div class="botonArriba">↑</div>
-	<div class="botonAbajo">↓</div><div class="separador"></div><div class="separador"></div>
-	<div class="botonArriba">↑</div>
-	<div class="botonAbajo">↓</div><div class="separador"></div><div class="separador"></div>
-	<div class="botonArriba">↑</div>
-	<div class="botonAbajo">↓</div><div class="separador"></div><div class="separador"></div>
-	<div class="botonArriba">↑</div>
-	<div class="botonAbajo">↓</div><div class="separador"></div><div class="separador"></div>
-	<div class="botonArriba">↑</div>
-	<div class="botonAbajo">↓</div><div class="separador"></div><div class="separador"></div>
-	<div class="botonArriba">↑</div>
-	<div class="botonAbajo">↓</div><div class="separador"></div><div class="separador"></div>
-	<div class="botonArriba">↑</div>
-	<div class="botonAbajo">↓</div><div class="separador"></div>
+	<div class="botonLlamada boton_red" id="arriba10" onclick="precionar(10,'arriba',this);">↑</div>
+	<div class="botonLlamada boton_red" id="abajo10" onclick="precionar(10,'abajo',this);">↓</div><div class="separador"></div><div class="separador"></div>
+	<div class="botonLlamada boton_grey" id="arriba9"  onclick="precionar(9,'arriba',this);">↑</div>
+	<div class="botonLlamada boton_grey" id="abajo9"  onclick="precionar(9,'abajo' ,this);">↓</div><div class="separador"></div><div class="separador"></div>
+	<div class="botonLlamada boton_grey" id="arriba8"  onclick="precionar(8,'arriba',this);">↑</div>
+	<div class="botonLlamada boton_grey" id="abajo8"  onclick="precionar(8,'abajo' ,this);">↓</div><div class="separador"></div><div class="separador"></div>
+	<div class="botonLlamada boton_grey" id="arriba7"  onclick="precionar(7,'arriba',this);">↑</div>
+	<div class="botonLlamada boton_grey" id="abajo7"  onclick="precionar(7,'abajo' ,this);">↓</div><div class="separador"></div><div class="separador"></div>
+	<div class="botonLlamada boton_grey" id="arriba6"  onclick="precionar(6,'arriba',this);">↑</div>
+	<div class="botonLlamada boton_grey" id="abajo6"  onclick="precionar(6,'abajo' ,this);">↓</div><div class="separador"></div><div class="separador"></div>
+	<div class="botonLlamada boton_grey" id="arriba5"  onclick="precionar(5,'arriba',this);">↑</div>
+	<div class="botonLlamada boton_grey" id="abajo5"  onclick="precionar(5,'abajo' ,this);">↓</div><div class="separador"></div><div class="separador"></div>
+	<div class="botonLlamada boton_grey" id="arriba4"  onclick="precionar(4,'arriba',this);">↑</div>
+	<div class="botonLlamada boton_grey" id="abajo4"  onclick="precionar(4,'abajo' ,this);">↓</div><div class="separador"></div><div class="separador"></div>
+	<div class="botonLlamada boton_grey" id="arriba3"  onclick="precionar(3,'arriba',this);">↑</div>
+	<div class="botonLlamada boton_grey" id="abajo3"  onclick="precionar(3,'abajo' ,this);">↓</div><div class="separador"></div><div class="separador"></div>
+	<div class="botonLlamada boton_grey" id="arriba2"  onclick="precionar(2,'arriba',this);">↑</div>
+	<div class="botonLlamada boton_grey" id="abajo2"  onclick="precionar(2,'abajo' ,this);">↓</div><div class="separador"></div><div class="separador"></div>
+	<div class="botonLlamada boton_red" id="arriba1"  onclick="precionar(1,'arriba',this);">↑</div>
+	<div class="botonLlamada boton_grey" id="abajo1"  onclick="precionar(1,'abajo' ,this);">↓</div><div class="separador"></div>
 </div>
 
 <div class="botonesPisos">
-	<div class="boton" id="boton1">1</div>
-	<div class="boton" id="boton2">2</div>
-	<div class="boton" id="boton3">3</div>
-	<div class="boton" id="boton4">4</div>
-	<div class="boton" id="boton5">5</div>
-	<div class="boton" id="boton6">6</div>
-	<div class="boton" id="boton7">7</div>
-	<div class="boton" id="boton8">8</div>
-	<div class="boton" id="boton9">9</div>
-	<div class="boton" id="boton10">10</div>
-	<div class="boton" id="boton10">C</div>
-	<div class="boton" id="boton10">E</div>
+	<div class="boton boton_red" id="boton1" onclick="precionar(1,'ascensor',this);">1</div>
+	<div class="boton boton_grey" id="boton2"  onclick="precionar(2,'ascensor',this);">2</div>
+	<div class="boton boton_grey" id="boton3" onclick="precionar(3,'ascensor',this);">3</div>
+	<div class="boton boton_grey" id="boton4" onclick="precionar(4,'ascensor',this);">4</div>
+	<div class="boton boton_grey" id="boton5" onclick="precionar(5,'ascensor',this);">5</div>
+	<div class="boton boton_grey" id="boton6" onclick="precionar(6,'ascensor',this);">6</div>
+	<div class="boton boton_grey" id="boton7" onclick="precionar(7,'ascensor',this);">7</div>
+	<div class="boton boton_grey" id="boton8" onclick="precionar(8,'ascensor',this);">8</div>
+	<div class="boton boton_grey" id="boton9" onclick="precionar(9,'ascensor',this);">9</div>
+	<div class="boton boton_grey" id="boton10" onclick="precionar(10,'ascensor',this);">10</div>
+	<div class="boton boton_grey" id="botonC" onclick="precionar('C','ascensor',this);">C</div>
+	<div class="boton boton_grey" id="botonE" onclick="precionar('E','ascensor',this);">E</div>
 </div>
 
 </body>
 </html>
+
+<script>
+	inicializacion();
+	setTimeout(logica,Tiempo_para_empezar_a_correr_logica);
+</script>
